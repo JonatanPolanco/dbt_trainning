@@ -1,0 +1,714 @@
+version: 2
+
+models:
+  - name: stg_mm_telemetry_prod__tracks
+    description: |
+      Reconstructed `tracks` table using custom properties expected to be in the events.
+
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: category
+        description: The event's category.
+      - name: event_type
+        description: The type of the event.
+      - name: user_id
+        description: The ID of the user that sent the event.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by RudderStack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by RudderStack when the event occurred refactored to clients clock skew.
+
+  - name: stg_mm_telemetry_prod__performance_events
+    description: |
+      Reconstructed `performance_events` table from schema `MM_TELEMETRY_PROD` using only columns needed by looker.
+
+    columns:
+      - name: id
+      - name: anonymous_id
+      - name: received_at
+      - name: sent_at
+      - name: original_timestamp
+      - name: timestamp
+      - name: context_ip
+      - name: event
+      - name: event_text
+      - name: channel
+      - name: context_app_namespace
+      - name: user_actual_id
+      - name: context_library_name
+      - name: type
+      - name: context_app_version
+      - name: user_actual_role
+      - name: context_app_build
+      - name: context_library_version
+      - name: context_user_agent
+      - name: context_app_name
+      - name: context_locale
+      - name: context_screen_density
+      - name: category
+      - name: duration
+      - name: num_of_request
+      - name: max_api_resource_size
+      - name: longest_api_resource_duration
+      - name: user_id
+      - name: count
+      - name: request_count
+      - name: event_date
+      - name: received_at_date
+      - name: fresh
+
+
+  - name: stg_mm_telemetry_prod__server
+    description: |
+      Events originating from servers with server metadata. Sent using Rudderstack.
+
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: count_system_admins
+        description: The total number of system admins at the time the event was submitted.
+      - name: version_full
+        description: The full version string of the server's semver.
+      - name: version_major
+        description: The major version of the server at the time the event was submitted.
+      - name: version_minor
+        description: The minor version of the server at the time the event was submitted.
+      - name: version_patch
+        description: The patch version of the server at the time the event was submitted.
+      - name: installation_id
+        description: The id of the installation
+      - name: installation_type
+        description: |
+          Type of installation (if known). Possible values are: kubernetes-operator, deb_package, gitlab_omnibus, omnibus, ubuntu-testing, docker, podman, team
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: server_ip
+        description: |
+          The server's IP address. See [Rudderstack docs](https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/#how-rudderstack-collects-ip-address) for more information.
+      - name: operating_system
+        description: The operating system that the server runs on.
+      - name: database_type
+        description: The name of the database used by the server.
+      - name: database_version
+        description: The version of the database
+      - name: edition
+        description: Whether the build is enterprise ready or not.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: uuid_ts
+      - name: sent_at
+      - name: original_timestamp
+
+  - name: stg_mm_telemetry_prod__activity
+    description: Tracks key metrics related to server activity
+
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: server_ip
+        description: |
+          The server's IP address. See [Rudderstack docs](https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/#how-rudderstack-collects-ip-address) for more information.
+      - name: count_public_channels
+        description: Total number of public channels.
+      - name: count_deleted_public_channels
+        description: Total number of deleted public channels.
+      - name: count_private_channels
+        description: Total number of private channels.
+      - name: count_deleted_private_channels
+        description: Total number of deleted private channels.
+      - name: count_bot_posts_previous_day
+        description: Total number of deleted posts.
+      - name: count_posts_previous_day
+        description: Total number of posts the day before the event was sent.
+      - name: count_teams
+        description: Total number of teams in the server.
+      - name: count_slash_commands
+        description: Total number of slash commands.
+      - name: count_direct_message_channels
+        description: Total number of direct message channels.
+      - name: count_posts
+        description: Total number of posts.
+      - name: count_incoming_webhooks
+        description: Total number of incoming webhooks, excluding deleted.
+      - name: count_outgoing_webhooks
+        description: Total number of outgoing webhooks, excluding deleted.
+      - name: daily_active_users
+        description: |
+          Total number of active users for the past 24 hours prior to the timestamp of the event.
+          Bots and deleted users are excluded.
+      - name: monthly_active_users
+        description: |
+          Total number of active users for the past 31 days prior to the timestamp of the event.
+          Bots and deleted users are excluded.
+      - name: count_registered_users
+        description: Total number of users, including deleted users.
+      - name: count_registered_deactivated_users
+        description: Total number of inactive (deleted) users.
+      - name: bot_accounts
+        description: Total number of bot accounts.
+      - name: guest_accounts
+        description: Total number of guest users, excluding deleted.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+
+  - name: stg_mm_telemetry_prod__oauth
+    description: OAuth server configuration.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: server_ip
+        description: |
+          The server's IP address. See [Rudderstack docs](https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/#how-rudderstack-collects-ip-address) for more information.
+      - name: is_office365_enabled
+        description: Whether Office365 OAuth is enabled
+      - name: is_google_enabled
+        description: Whether Google OAuth is enabled
+      - name: is_gitlab_enabled
+        description: Whether Gitlab OAuth is enabled
+      - name: is_openid_enabled
+        description: Whether OpenID OAuth is enabled
+      - name: is_openid_google_enabled
+        description: Whether OpenID with Google OAuth is enabled
+      - name: is_openid_gitlab_enabled
+        description: Whether OpenID with Gitlab OAuth is enabled
+      - name: is_openid_office365_enabled
+        description: Whether OpenID with Office365 OAuth is enabled
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+
+  - name: stg_mm_telemetry_prod__ldap
+    description: Ldap server configuration.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: server_ip
+        description: |
+          The server's IP address. See [Rudderstack docs](https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/#how-rudderstack-collects-ip-address) for more information.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+      - name: connection_security_ldap
+      - name: enable_ldap
+      - name: enable_admin_filter
+      - name: enable_sync
+      - name: isdefault_email_attribute_ldap
+      - name: isdefault_first_name_attribute_ldap
+      - name: isdefault_group_display_name_attribute
+      - name: isdefault_group_id_attribute
+      - name: isdefault_id_attribute_ldap
+      - name: isdefault_last_name_attribute_ldap
+      - name: isdefault_login_button_border_color_ldap
+      - name: isdefault_login_button_color_ldap
+      - name: isdefault_login_button_text_color_ldap
+      - name: isdefault_login_field_name
+      - name: isdefault_login_id_attribute
+      - name: isdefault_nickname_attribute_ldap
+      - name: isdefault_position_attribute_ldap
+      - name: isdefault_username_attribute_ldap
+      - name: isempty_admin_filter
+      - name: isempty_group_filter
+      - name: isempty_guest_filter
+      - name: isnotempty_picture_attribute
+      - name: isnotempty_private_key
+      - name: isnotempty_public_certificate
+      - name: max_page_size
+      - name: query_timeout_ldap
+      - name: segment_dedupe_id_ldap
+      - name: skip_certificate_verification
+      - name: sync_interval_minutes
+
+  - name: stg_mm_telemetry_prod__saml
+    description: Ldap server configuration.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+      - name: enable_saml
+      - name: enable_admin_attribute
+      - name: enable_sync_with_ldap
+      - name: enable_sync_with_ldap_include_auth
+      - name: encrypt_saml
+      - name: ignore_guests_ldap_sync
+      - name: isdefault_admin_attribute
+      - name: isdefault_canonical_algorithm
+      - name: isdefault_email_attribute_saml
+      - name: isdefault_first_name_attribute_saml
+      - name: isdefault_guest_attribute
+      - name: isdefault_id_attribute_saml
+      - name: isdefault_last_name_attribute_saml
+      - name: isdefault_locale_attribute
+      - name: isdefault_login_button_border_color_saml
+      - name: isdefault_login_button_color_saml
+      - name: isdefault_login_button_text
+      - name: isdefault_login_button_text_color_saml
+      - name: isdefault_nickname_attribute_saml
+      - name: isdefault_position_attribute_saml
+      - name: isdefault_scoping_idp_name
+      - name: isdefault_scoping_idp_provider_id
+      - name: isdefault_signature_algorithm
+      - name: isdefault_username_attribute_saml
+      - name: sign_request
+      - name: verify_saml
+
+  - name: stg_mm_telemetry_prod__plugin
+    description: Plugin server configuration.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id_plugin
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+
+      - name: allow_insecure_download_url
+      - name: automatic_prepackaged_plugins
+      - name: chimera_oauth_proxy_url
+      - name: is_default_marketplace_url
+      - name: require_plugin_signature
+      - name: as signature_public_key_files
+      - name: enable_plugin
+      - name: enable_alertmanager
+      - name: enable_antivirus
+      - name: enable_autolink
+      - name: enable_aws_sns
+      - name: enable_bitbucket
+      - name: enable_confluence
+      - name: enable_custom_user_attributes
+      - name: enable_focalboard
+      - name: enable_github
+      - name: enable_gitlab
+      - name: enable_health_check
+      - name: enable_jenkins
+      - name: enable_jira
+      - name: enable_jitsi
+      - name: enable_marketplace
+      - name: enable_mattermostprofanityfilter
+      - name: enable_mattermost_plugin_azure_devops
+      - name: enable_mattermost_plugin_hackerone
+      - name: enable_mattermost_plugin_servicenow
+      - name: enable_mattermost_plugin_servicenow_virtual_agent
+      - name: enable_memes
+      - name: enable_mscalendar
+      - name: enable_nps
+      - name: enable_nps_survey
+      - name: enable_playbooks
+      - name: enable_remote_marketplace
+      - name: enable_set_default_theme
+      - name: enable_skype4business
+      - name: enable_todo
+      - name: enable_uploads
+      - name: enable_webex
+      - name: enable_welcome_bot
+      - name: enable_zoom
+      - name: enable_giphy
+      - name: enable_digital_ocean
+      - name: enable_agenda
+      - name: enable_mattermost_apps
+      - name: enable_calls
+      - name: enable_incident_management
+      - name: enable_incident_response
+      - name: enable_matterpoll
+      - name: enable_diceroller
+      - name: enable_comgithubjespinorecommend
+      - name: enable_msteams_meetings
+      - name: enable_msteams_sync
+      - name: enable_commattermostpluginchannelexport 
+      - name: enable_comnilsbrinkmannicebreaker
+      - name: enable_circleci
+      - name: version_alertmanager
+      - name: version_antivirus
+      - name: version_autolink
+      - name: version_aws_sns
+      - name: version_custom_user_attributes
+      - name: version_github
+      - name: version_gitlab
+      - name: version_jenkins
+      - name: version_jira
+      - name: version_msteams_sync
+      - name: version_nps
+      - name: version_webex
+      - name: version_welcome_bot
+      - name: version_zoom
+      - name: version_giphy
+      - name: version_digital_ocean
+      - name: version_confluence
+      - name: version_mscalendar
+      - name: version_incident_management
+      - name: version_incident_response
+      - name: version_todo
+      - name: version_memes
+      - name: version_jitsi
+      - name: version_skype4business
+      - name: version_mattermostprofanityfilter
+      - name: version_matterpoll
+      - name: version_comgithubjespinorecommend
+      - name: version_agenda        
+      - name: version_msteams_meetings
+      - name: version_commattermostpluginchannelexport
+      - name: version_comnilsbrinkmannicebreaker
+      - name: version_mattermost_apps
+      - name: version_circleci
+      - name: version_diceroller
+      - name: version_focalboard
+  
+  - name: stg_mm_telemetry_prod__service
+    description: Service server configuration.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occurred refactored to clients clock skew.
+      - name: installation_id_plugin
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+      - name: allow_cookies_for_subdomains
+      - name: allow_edit_post_service
+      - name: allow_persistent_notifications
+      - name: allow_persistent_notifications_for_guests                                       
+      - name: allow_synced_drafts
+      - name: close_unused_direct_messages
+      - name: cluster_log_timeout_milliseconds
+      - name: collapsed_threads
+      - name: connection_security_service
+      - name: cors_allow_credentials
+      - name: cors_debug
+      - name: custom_service_terms_enabled
+      - name: custom_cert_header
+      - name: default_team_name
+      - name: developer_flags
+      - name: disable_bots_when_owner_is_deactivated
+      - name: disable_legacy_mfa
+      - name: enable_apiv3
+      - name: enable_api_channel_deletion
+      - name: enable_api_post_deletion
+      - name: enable_api_team_deletion
+      - name: enable_api_trigger_admin_notification
+      - name: enable_api_user_deletion
+      - name: enable_bot_account_creation
+      - name: enable_channel_viewed_messages_service
+      - name: enable_commands_service
+      - name: enable_custom_emoji_service
+      - name: enable_developer_service
+      - name: enable_email_invitations
+      - name: enable_emoji_picker_service
+      - name: enable_file_search
+      - name: enable_gif_picker
+      - name: enable_incoming_webhooks_service
+      - name: enable_insecure_outgoing_connections_service
+      - name: enable_latex
+      - name: enable_legacy_sidebar
+      - name: enable_link_previews
+      - name: enable_local_mode
+      - name: enable_multifactor_authentication_service
+      - name: enable_oauth_service_provider_service
+      - name: enable_onboarding_flow
+      - name: enable_only_admin_integrations_service
+      - name: enable_opentracing
+      - name: enable_outgoing_oauth_connections
+      - name: enable_outgoing_webhooks
+      - name: enable_permalink_previews
+      - name: enable_post_icon_override
+      - name: enable_post_search
+      - name: enable_post_username_override
+      - name: enable_preview_features
+      - name: enable_security_fix_alert
+      - name: enable_svgs
+      - name: enable_testing
+      - name: enable_tutorial
+      - name: enable_user_access_tokens
+      - name: enable_user_statuses
+      - name: enable_user_typing_messages
+      - name: enforce_multifactor_authentication_service
+      - name: experimental_channel_organization
+      - name: experimental_channel_sidebar_organization
+      - name: experimental_data_prefetch
+      - name: experimental_enable_authentication_transfer
+      - name: experimental_enable_default_channel_leave_join_messages
+      - name: experimental_enable_hardened_mode
+      - name: experimental_group_unread_channels
+      - name: experimental_ldap_group_sync
+      - name: experimental_limit_client_config
+      - name: experimental_strict_csrf_enforcement
+      - name: as extend_session_length_with_activity
+      - name: forward_80_to_443
+      - name: gfycat_api_key
+      - name: gfycat_api_secret
+      - name: isdefault_allowed_untrusted_internal_connections
+      - name: isdefault_allow_cors_from 
+      - name: isdefault_cors_exposed_headers
+      - name: isdefault_google_developer_key
+      - name: isdefault_idle_timeout   
+      - name: isdefault_image_proxy_options
+      - name: isdefault_image_proxy_type
+      - name: isdefault_image_proxy_url
+      - name: isdefault_read_timeout
+      - name: isdefault_site_url
+      - name: isdefault_tls_cert_file
+      - name: isdefault_tls_key_file
+      - name: isdefault_write_timeout
+      - name: limit_load_search_result
+      - name: login_with_certificate
+      - name: managed_resource_paths
+      - name: maximum_login_attempts
+      - name: maximum_payload_size
+      - name: maximum_url_length
+      - name: minimum_hashtag_length
+      - name: outgoing_integrations_requests_timeout
+      - name: persistent_notification_interval_minutes
+      - name: persistent_notification_max_count
+      - name: persistent_notification_max_recipients
+      - name: post_edit_time_limit
+      - name: post_priority
+      - name: refresh_post_stats_run_time
+      - name: restrict_custom_emoji_creation
+      - name: restrict_link_previews
+      - name: restrict_post_delete
+      - name: self_hosted_expansion
+      - name: self_hosted_purchase 
+      - name: session_cache_in_minutes
+      - name: session_idle_timeout_in_minutes
+      - name: session_length_mobile_in_days
+      - name: session_length_mobile_in_hours
+      - name: session_length_sso_in_days
+      - name: session_length_sso_in_hours
+      - name: session_length_web_in_days
+      - name: session_length_web_in_hours
+      - name: skip_login_page
+      - name: terminate_sessions_on_password_change
+      - name: thread_auto_follow
+      - name: time_between_user_typing_updates_milliseconds
+      - name: tls_strict_transport
+      - name: uses_letsencrypt
+      - name: websocket_url
+      - name: web_server_mode
+
+  - name: stg_mm_telemetry_prod__license
+    description: |
+     Telemetry containing license related data. Telemetry source is server-side components via Rudderstack.
+    columns:
+      - name: event_id
+        description: The event's id.
+      - name: event_name
+        description: The name of the event.
+      - name: event_table
+        description: The name of the event table.
+      - name: server_id
+        description: The ID of the server the event originated from.
+      - name: received_at
+        description: Timestamp registered by Rudderstack when the event was ingested (received).
+      - name: timestamp
+        description: Timestamp registered by Rudderstack when the event occured refactored to clients clock skew.
+      - name: license_telemetry_date
+        description: Timestamp converted to date registered by Rudderstack when the event occured refactored to clients clock skew.
+      - name: license_id
+        description: The id of the license used at the time the event was sent.
+      - name: customer_id
+        description: The customer ID, as defined in the license.
+      - name: installation_id
+        description: The id of the installation
+      - name: anonymous_id
+        description: Server's anonymous ID.
+      - name: license_name
+        description: The name of the current license.
+      - name: licensed_seats
+        description: The number of licensed seats for the current license.
+      - name: issued_at
+        description: The date and time the license was issued at.
+      - name: starts_at
+        description: The date and time the license started at.
+      - name: expire_at
+        description: The date and time the license expires at.
+      - name: is_feature_advanced_logging_enabled
+        description: Whether feature "advanced_logging" is enabled.
+      - name: is_feature_cloud_enabled
+        description: Whether feature "cloud" is enabled.
+      - name: is_feature_cluster_enabled
+        description: Whether feature "cluster" is enabled.
+      - name: is_feature_compliance_enabled
+        description: Whether feature "compliance" is enabled.
+      - name: is_feature_custom_permissions_schemes_enabled
+        description: Whether feature "custom_permissions_schemes" is enabled.
+      - name: is_feature_data_retention_enabled
+        description: Whether feature "data_retention" is enabled.
+      - name: is_feature_elastic_search_enabled
+        description: Whether feature "elastic_search" is enabled.
+      - name: is_feature_email_notification_contents_enabled
+        description: Whether feature "email_notification_contents" is enabled.
+      - name: is_feature_enterprise_plugins_enabled
+        description: Whether feature "enterprise_plugins" is enabled.
+      - name: is_feature_future_enabled
+        description: Whether feature "future" is enabled.
+      - name: is_feature_google_enabled
+        description: Whether feature "google" is enabled.
+      - name: is_feature_guest_accounts_enabled
+        description: Whether feature "guest_accounts" is enabled.
+      - name: is_feature_guest_accounts_permissions_enabled
+        description: Whether feature "guest_accounts_permissions" is enabled.
+      - name: is_feature_id_loaded_enabled
+        description: Whether feature "id_loaded" is enabled.
+      - name: is_feature_ldap_enabled
+        description: Whether feature "ldap" is enabled.
+      - name: is_feature_ldap_groups_enabled
+        description: Whether feature "ldap_groups" is enabled.
+      - name: is_feature_lock_teammate_name_display_enabled
+        description: Whether feature "lock_teammate_name_display" is enabled.
+      - name: is_feature_message_export_enabled
+        description: Whether feature "message_export" is enabled.
+      - name: is_feature_metrics_enabled
+        description: Whether feature "metrics" is enabled.
+      - name: is_feature_mfa_enabled
+        description: Whether feature "mfa" is enabled.
+      - name: is_feature_mhpns_enabled
+        description: Whether feature "mhpns" is enabled.
+      - name: is_feature_office365_enabled
+        description: Whether feature "office365" is enabled.
+      - name: is_feature_office_365_enabled
+        description: Whether feature "office_365" is enabled.
+      - name: is_feature_openid_enabled
+        description: Whether feature "openid" is enabled.
+      - name: is_feature_remote_cluster_service_enabled
+        description: Whether feature "remote_cluster_service" is enabled.
+      - name: is_feature_saml_enabled
+        description: Whether feature "saml" is enabled.
+      - name: is_feature_shared_channels_enabled
+        description: Whether feature "shared_channels" is enabled.
+      - name: server_ip
+        description: |
+          The server's IP address. See [Rudderstack docs](https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/#how-rudderstack-collects-ip-address) for more information.
+      - name: context_library_version
+        description: The version of Rudderstack library used to send this event.
+      - name: context_library_name
+        description: The name of Rudderstack library used to send this event.
+      - name: sent_at
+      - name: original_timestamp
+
+  - name: stg_mm_telemetry_prod__event
+    description: Contains all raw events, as they are stored by Rudderstack. Might contain duplicates.
+
+  - name: stg_mm_telemetry_prod__event_deduped
+    description: |
+      Contains all raw events. Deduplication has been implemented using 
+      [deferred merge](https://quickstarts.snowflake.com/guide/connectors_example_push_based_java/img/e5a0394034661f7.pdf)
+      pattern.

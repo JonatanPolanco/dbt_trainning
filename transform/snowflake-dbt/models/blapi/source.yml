@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: blapi
+    database: 'RAW'
+    schema: blapi
+    loader: Pipelinewise
+    description: |
+      Copy of BLAPI database using [PipelineWise](https://transferwise.github.io/pipelinewise/). See relevant Airflow 
+      DAG for more details.
+    tags:
+      - pipelinewise
+
+    tables:
+      - name: trial_requests
+      - name: addons
+      - name: addons_version
+      - name: addresses
+      - name: addresses_version
+      - name: credit_cards
+      - name: credit_cards_version
+      - name: customers
+      - name: customers_version
+      - name: features_version
+      - name: invoices
+      - name: invoices_version
+      - name: payment_methods
+      - name: payments
+      - name: payments_version
+      - name: product_addons
+      - name: product_addons_version
+      - name: product_features
+      - name: product_features_version
+      - name: products
+      - name: products_version
+      - name: purchase_fact
+      - name: subscription_addons
+      - name: subscription_addons_version
+      - name: subscriptions
+      - name: subscriptions_version
+      - name: usage_events
+      - name: usage_events_version
+
+  - name: stripe
+    database: ANALYTICS
+    schema: stripe
+
+    tables:
+    - name: subscriptions
+    - name: charge
+    - name: invoices
+    - name: customers
+    - name: products
+
+  - name: salesforce
+    database: ANALYTICS
+    schema: ORGM
+
+    tables:
+    - name: lead

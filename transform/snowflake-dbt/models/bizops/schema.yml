@@ -1,0 +1,11 @@
+version: 2
+
+models:
+    - name: snowflake_amortized_rates
+      description: 'Rate per credit for Snowflake usage per day'
+
+    - name: snowflake_warehouse_cost
+      description: 'How long we used each virtual warehouse per day and how much it cost us in Snowflake'
+
+    - name: raw_warehouse_columns_hist
+      description: 'Daily snapshot of all columns for all relations in RAW Snowflake warehouse.'

@@ -1,0 +1,80 @@
+version: 2
+
+sources:
+  - name: mattermost_docs
+    database: RAW
+    schema: mattermost_docs
+    loader: Rudderstack
+    description: |
+      Telemetry data for [Mattermost Docs](https://docs.mattermost.com/). Pushed via Rudderstack.
+    tags:
+      - rudderstack
+
+    tables:
+      - name: tracks
+
+
+
+  - name: web
+    database: ANALYTICS
+    schema: web
+
+  - name: ga_developers_pages_visits
+    database: ANALYTICS
+    schema: ga_developers_pages_visits_sources
+
+    tables:
+      - name: report
+        description: "Page visits to developers.mattermost.com"
+
+  - name: ga_mattermost_com_pages_visits
+    database: ANALYTICS
+    schema: ga_mattermost_com_pages_visits
+
+    tables:
+      - name: report
+        description: "Page visits to Mattermost.com"
+
+  - name: ga_mattermost_handbook_pages_visits
+    database: ANALYTICS
+    schema: ga_mattermost_handbook_pages_visits
+
+    tables:
+      - name: report
+        description: "Page visits to Mattermost Handbook"
+
+  - name: ga_licensing_pages_visits
+    database: ANALYTICS
+    schema: ga_licensing_pages_visits
+
+    tables:
+      - name: report
+        description: "Page visits to Licensing"
+
+  - name: ga_docs_pages_visits_sources
+    database: ANALYTICS
+    schema: ga_docs_pages_visits_sources
+
+    tables:
+      - name: report
+        description: "Page visits to Docs"
+
+  - name: google_ads
+    database: ANALYTICS
+    schema: google_ads
+
+    tables:
+      - name: ad_groups
+
+  - name: user_agent_registry
+    database: ANALYTICS
+    schema: web
+    loader: Python
+    tags:
+      - python
+
+    tables:
+      - name: user_agent_registry
+        description: |
+          Extracts details of user agent strings and breaks them to multiple columns. Implemented with python script.
+          [Source code](https://github.com/mattermost/mattermost-data-warehouse/blob/master/utils/user_agent_parser.py).

@@ -1,0 +1,45 @@
+version: 2
+
+sources:
+  - name: sales_and_cs_gsheets
+    database: ANALYTICS
+    schema: sales_and_cs_gsheets
+    loader: Stitch
+    tags:
+      - stitch
+
+    tables:
+      - name: available_renewals_current_fy
+      - name: available_renewals_historical
+      - name: forecast
+      - name: forecast_by_segment
+      - name: new_and_expansion_by_qtr
+      - name: new_and_expansion_by_segment_by_qtr
+      - name: renewal_by_qtr
+      - name: renewal_by_segment_by_qtr
+
+  - name: finance_gsheets
+    database: ANALYTICS
+    schema: finance_gsheets
+    description: Copies data from Finance team's Google Sheets to data warehouse. Copying is implemented using Stitch.
+    loader: Stitch
+    tags:
+      - stitch
+
+    tables:
+      - name: arr_by_qtr
+      - name: financial_model
+      - name: financial_statements
+
+  - name: marketing_gsheets
+    database: ANALYTICS
+    schema: marketing_gsheets
+    loader: Stitch
+    description: Copies data from Marketing team's Google Sheets to data warehouse. Copying is implemented using Stitch.
+    tags:
+      - stitch
+
+    tables:
+      - name: fy22_bottoms_up_targets
+      - name: fy22_budget_by_month
+      - name: fy22_key_assumptions

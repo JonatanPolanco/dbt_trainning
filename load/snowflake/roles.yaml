@@ -1,0 +1,338 @@
+version: "1.0"
+
+# Databases
+databases:
+    - analytics:
+        shared: no
+
+    - archive:
+        shared: no
+
+    - raw:
+        shared: no
+
+    - dev:
+        shared: no
+
+    - snowflake:
+        shared: yes
+
+    - snowflake_sample_data:
+        shared: yes
+
+
+# Roles
+roles:
+    ## Admin Roles
+    - accountadmin:
+        warehouses:
+            - analyst_xs
+        member_of:
+            - sysadmin
+
+    - securityadmin:
+        warehouses:
+            - analyst_xs
+        member_of:
+            - sysadmin
+
+    - permission_bot:
+        warehouses:
+            - analyst_xs
+
+    - sysadmin:
+        warehouses:
+            - analyst_xs
+        privileges:
+            databases:
+                read:
+                    - raw
+                    - analytics
+                    - archive
+                    - dev
+                    - snowflake
+                write:
+                    - raw
+                    - analytics
+                    - archive
+                    - dev
+            schemas:
+                read:
+                    - raw.*
+                    - analytics.*
+                    - archive.*
+                    - dev.*
+                    - snowflake.*
+                write:
+                    - raw.*
+                    - analytics.*
+                    - archive.*
+                    - dev.*
+            tables:
+                read:
+                    - raw.*.*
+                    - analytics.*.*
+                    - archive.*.*
+                    - dev.*.*
+                    - snowflake.account_usage.*
+                write:
+                    - raw.*.*
+                    - analytics.*.*
+                    - archive.*.*
+                    - dev.*.*
+
+    ## Regular Roles
+    - stitch:
+        warehouses:
+            - stitch
+            - transform_l
+            - reporting_s
+            - transform_xs
+        privileges:
+            databases:
+                read:
+                    - raw
+                    - analytics
+                write:
+                    - raw
+                    - analytics
+            schemas:
+                read:
+                    - raw.*
+                    - analytics.*
+                write:
+                    - raw.*
+                    - analytics.*
+            tables:
+                read:
+                    - raw.*.*
+                    - analytics.*.*
+                write:
+                    - raw.*.*
+                    - analytics.*.*
+    - rudderstack:
+        warehouses:
+            - rudderstack_m
+        privileges:
+            databases:
+                read:
+                    - raw
+                write:
+                    - raw
+            schemas:
+                read:
+                    - raw.*
+                write:
+                    - raw.*
+            tables:
+                read:
+                    - raw.*.*
+                write:
+                    - raw.*.*
+
+    - reporting:
+        warehouses:
+            - reporting_s
+            - reporting_m
+            - transform_l
+        privileges:
+            databases:
+                read:
+                    - analytics
+                    - snowflake
+            schemas:
+                read:
+                    - analytics.*
+                    - snowflake.account_usage
+            tables:
+                read:
+                    - analytics.*.*
+                    - snowflake.account_usage.*
+
+    - reporting_all:
+        warehouses:
+            - reporting_s
+            - reporting_m
+            - transform_l
+        privileges:
+            databases:
+                read:
+                    - raw
+                    - analytics
+            schemas:
+                read:
+                    - raw.*
+                    - analytics.*
+            tables:
+                read:
+                    - raw.*.*
+                    - analytics.*.*
+
+    - loader:
+        warehouses:
+            - analyst_xs
+            - stitch
+        privileges:
+            databases:
+                read:
+                    - raw
+                    - archive
+                write:
+                    - raw
+                    - archive
+            schemas:
+                read:
+                    - raw.*
+                    - archive.*
+                write:
+                    - raw.*
+                    - archive.*
+            tables:
+                read:
+                    - raw.*.*
+                    - archive.*.*
+                write:
+                    - raw.*.*
+                    - archive.*.*
+
+    - transformer:  # For automated jobs
+        warehouses:
+            - transform_xs
+            - transform_l
+            - transform_m
+        privileges:
+            databases:
+                read:
+                    - raw
+                    - analytics
+                    - archive
+                    - snowflake
+                    - dev
+                write:
+                    - raw
+                    - analytics
+                    - archive
+                    - dev
+            schemas:
+                read:
+                    - raw.*
+                    - analytics.*
+                    - archive.*
+                    - snowflake.account_usage
+                    - dev.*
+                write:
+                    - analytics.*
+                    - archive.*
+                    - dev.*
+            tables:
+                read:
+                    - raw.*.*
+                    - analytics.*.*
+                    - archive.*.*
+                    - snowflake.account_usage.*
+                    - dev.*.*
+                write:
+                    - analytics.*.*
+                    - archive.*.*
+                    - dev.*.*
+
+    - test_bi:
+        warehouses:
+            - transform_xs
+        privileges:
+            databases:
+                read:
+                    - analytics
+                    - snowflake_sample_data
+            schemas:
+                read:
+                    - analytics.mart_common
+                    - analytics.mart_product
+                    - analytics.mart_release
+                    - analytics.mart_sales
+                    - snowflake_sample_data.*
+            tables:
+                read:
+                    - analytics.mart_common.*
+                    - analytics.mart_product.*
+                    - analytics.mart_release.*
+                    - analytics.mart_sales.*
+                    - snowflake_sample_data.*.*
+
+# Users
+users:
+    - airflow:
+        can_login: yes
+        member_of:
+            - sysadmin
+            - transformer
+
+    - stitch:
+        can_login: yes
+        member_of:
+            - stitch
+
+    - rudderstack:
+        can_login: yes
+        member_of:
+            - rudderstack
+            - stitch
+
+    - rudderstack_bot:
+        can_login: yes
+        member_of:
+            - rudderstack
+            - stitch
+
+    - permission_bot:
+        can_login: yes
+        member_of:
+            - permission_bot
+            - securityadmin
+            - sysadmin
+
+    - looker:
+        can_login: yes
+        member_of:
+            - reporting
+
+    - loader:
+        can_login: yes
+        member_of:
+            - loader
+
+    - lightup:
+        can_login: yes
+        member_of:
+            - stitch
+
+    - test_user:
+        can_login: no
+        member_of:
+            - test_bi
+
+# Warehouses
+warehouses:
+    - analyst_xs:
+        size: x-small
+
+    - stitch:
+        size: x-small
+
+    - transform_xs:
+        size: x-small
+
+    - transform_l:
+        size: large
+
+    - reporting_s:
+        size: small
+
+    - reporting_m:
+        size: medium
+
+    - transform_m:
+        size: medium
+
+    - rudderstack_m:
+        size: medium

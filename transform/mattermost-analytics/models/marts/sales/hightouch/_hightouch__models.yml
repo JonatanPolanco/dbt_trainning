@@ -1,0 +1,186 @@
+version: 2
+
+models:
+  - name: fct_in_product_trial_requests
+    description: |
+      Trial request data from Customer Web Server to be synced to Salesforce and to power Looker dashboards for
+      insights on trial flows.
+
+    columns:
+      - name: trial_request_id
+        description: The id of the trial request.
+        tests:
+          - not_null
+          - unique
+      - name: name
+        description: The user's full name.
+        tags: [ 'pii' ]
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: first_name
+        description: | 
+          The user's first name. This value may originate from:
+            - First name (if directly provided).
+            - By splitting the name string on first space and keeping the first part.
+            - If none of the above are available, the first 40 characters of the "username" part of the email.
+        tests:
+          - dbt_utils.not_empty_string
+        tags: ['pii']
+      - name: last_name
+        description: | 
+          The user's last name. This value may originate from:
+            - Last name (if directly provided).
+            - By splitting the name string on first space and keeping the second part.
+            - If none of the above are available, the first 40 characters of the "username" part of the email.
+        tests:
+          - dbt_utils.not_empty_string
+        tags: ['pii']
+      - name: company_size
+        description: The lower bound of the company size bucket.
+      - name: company_name
+        description: |
+          The company's name. If not provided, `Unknown` is used.
+        tests:
+          - dbt_utils.not_empty_string
+      - name: normalized_email
+        tags: ['pii']
+        description: |
+          The contact email provided in the signup form. If not filled in, it's the email of the user 
+          requesting the trial. Email is lowercased in order to match Salesforce lowercased emails.
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: country_name
+        description: The requester's country.
+        # Make sure that country name has been transformed to a valid country name
+        tests:
+          - relationships:
+              name: valid_country_name
+              to: ref('country_codes')
+              field: name
+              config:
+                where: "country_name <> ''"
+        tags: ['pii']
+      - name: trial_start_at
+        description: The starting date of the trial.
+      - name: num_users
+        description: Number of end users for the server.
+      - name: request_source
+        description: The source of the trial request.
+        tests:
+          - accepted_values:
+              values: [ 'Website', 'In-Product' ]
+      - name: is_existing_lead
+        description: Whether there's already a lead with the same email.
+      - name: license_id
+        description: The license's unique id.
+      - name: license_activation_date
+        description: The first date that the license was reported via telemetry.
+      - name: server_ids
+        description: A list of the server ids that have reported the license.
+      - name: is_existing_campaign_member
+        description: Whether there's already a campaign member for the same email and lead.
+      - name: is_valid_email
+        description: Whether the email is valid. Used to skip invalid emails.
+      - name: lead_id
+        description: The id of the lead to update (if any exists), matched on email.
+      - name: campaign_member_status
+        description: The campaign member's status.
+      - name: campaign_id
+        description: The id of the campaign to attribute this lead to.
+
+  - name: fct_cloud_trial_requests
+    description: |
+      Trial request data coming from the source Stripe, only limited to creating campaign member objects in Salesforce.
+
+    columns:
+      - name: email
+        tags: ['pii']
+        description: Customer email for cloud trial requests coming from Stripe.
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - unique
+      - name: trial_start_at
+        description: The starting date of the trial.
+      - name: trial_end_at
+        description: The ending date of the trial.
+      - name: cws_installation
+        description: The installation id of the Cloud server provisioned for the trial.
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: cws_dns
+        description: The URL of the Cloud server provisioned for the trial.
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+      - name: existing_lead_id
+        description: The id of the lead to update (if any exists), matched on email.
+      - name: existing_campaign_member_id
+        description: The id of the campaign member to update (if any exists), matched on email.
+      - name: campaign_id
+        description: The id of the campaign to attribute this lead to.
+      - name: is_existing_lead
+        description: Whether there's already a lead with the same email.
+      - name: is_existing_campaign_member
+        description: Whether there's already a campaign member for the same email and lead.
+      - name: campaign_member_status
+        description: The campaign member's status.
+      - name: is_valid_email
+        description: Whether the email is valid. Used to skip invalid emails.
+      - name: is_blacklisted_email
+        description: Whether the email is blacklisted.
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: "trial_start_at < trial_end_at"
+
+  - name: sync_lead_account_link
+    description: |
+      Assigns leads to specific accounts. This model is used to sync the lead to account link to Salesforce.
+
+    columns:
+      - name: lead_id
+        description: The Salesforce id of the lead.
+        tests:
+          - not_null
+          - unique
+      - name: account_id
+        description: The salesforce id of the account.
+      - name: lead_email
+        description: The email of the lead.
+      - name: account_name
+        description: The name of the account.
+      - name: clearbit_domain
+        description: The email domain assigned to the account via Clearbit.
+
+
+  - name: sync_account_arr_and_type
+    description: |
+      Assigns ARR and Account Type to accounts. This model is used to sync ARR and Account Type to Salesforce.
+
+    columns:
+      - name: sfid
+        description: The Salesforce ID of the account.
+        tests:
+          - not_null
+          - unique
+      - name: total_arr
+        description: The total ARR of the account.
+      - name: account_type
+        description: The type of the account.
+
+  - name: sync_opportunity_update_ending_arr
+    description: |
+      Updates the ending ARR of an opportunity. This model is used to update the ending ARR of an opportunity in 
+      Salesforce.
+
+    columns:
+      - name: opportunity_sfid
+        description: The Salesforce ID of the opportunity.
+        tests:
+          - not_null
+          - unique
+      - name: ending_arr
+        description: The ending ARR of the opportunity.

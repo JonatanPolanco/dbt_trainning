@@ -1,0 +1,68 @@
+version: 2
+
+macros:
+
+  - name: get_rudderstack_columns
+    description: |
+      Returns a list of columns that are default to all rudderstack tables.
+
+  - name: join_tracks_event_tables
+    description: |
+      A macro that joins event tables to a single table, keeping the extra columns. 
+      
+      Rudderstack stores one row in two tables for each event. 
+      - `tracks`, which holds generic information about the event, and
+      - `event_name`, which holds the extra user defined properties. 
+      
+      This macro joins all tables except the default tables defined in
+      [warehouse schema](https://www.rudderstack.com/docs/destinations/warehouse-destinations/warehouse-schema). It also
+      allows for filtering which columns to keep. This can be useful in scenarios where events share properties (i.e. 
+      indicating event hierarchy, A/B test allocations etc).
+
+    arguments:
+      - name: schema
+        type: string
+        description: The schema that contains the event tables.
+      - name: columns
+        type: list
+        description: The list of columns to keep.
+
+  - name: get_event_relations
+    description: |
+      Returns a list of tables from the given schema that might be Rudderstack events. Offers functionality for 
+      filtering out tables with too few rows.
+    arguments:
+      - name: schema
+        type: string
+        description: The schema that contains the event tables.
+      - name: min_rows
+        type: integer
+        description: Keep only tables with rows greater or equal to this value (default 100).
+      - name: database
+        type: string
+        description: The database that contains the schema provided as the first argument.
+      - name: exclude
+        type: list
+        description: Relations to not include (if exist).
+
+  - name: rudder_daily_event_count
+    description: |
+      Summarizes a table containing events by grouping and counting them. Grouping is done by date and user 
+      defined fields.
+    arguments:
+      - name: relation
+        type: string
+        description: The relation containing events that will be summarized.
+      - name: by_columns
+        type: list
+        description: |
+          An optional list of the names of additional columns to be used for summarizing events. Default value
+          is ['event_table', 'event_text'].
+      - name: source_name
+        type: string
+        description: An optional name for the source table. If not defined, the name of the relation will be used.
+
+  - name: get_base_event_columns
+    description: |
+      Returns the list of columns to use from rudderstack tables. This list contains columns that are expected to be
+      in [every event table](https://www.rudderstack.com/docs/destinations/warehouse-destinations/warehouse-schema/#standard-rudderstack-properties

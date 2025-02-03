@@ -1,0 +1,89 @@
+version: 2
+models:
+  - name: account_util_dates
+    description: Util for calculating ARR at Account Level
+    columns:
+      - name: account_sfid
+        tests:
+          - not_null
+  - name: account_daily_arr
+    description: Daily ARR at the Account level
+    columns:
+      - name: account_sfid
+        tests:
+          - not_null
+  - name: account_daily_arr_deltas
+    description: Daily ARR deltas at the Account level
+    columns:
+      - name: account_sfid
+        tests:
+          - not_null
+  - name: account_monthly_arr_deltas
+    description: Monthly ARR deltas at the Account level
+    columns:
+      - name: account_sfid
+        tests:
+          - not_null
+  - name: account_monthly_arr_deltas_by_type
+    description: Monthly Account ARR Deltas by ARR type
+    columns:
+      - name: account_sfid
+        tests:
+          - not_null
+  - name: arr_transactions
+    description: Monthly account activity at account id level
+    columns:
+      - name: account_id
+        tests:
+          - not_null
+
+  - name: arr_reporting
+    description: Grouping arr_transaction opportunities at a monthly level to calculate resurrection and churn and explain changes
+    columns:
+      - name: account_id
+        tests:
+          - not_null
+
+  - name: contracted_arr_reporting
+    description: Same as arr_reporting but reporting date shifts to closing date instead of reporting date which is based on the later of close date or license start
+    columns:
+      - name: account_id
+        tests:
+          - not_null
+  
+  - name: arr_vintages
+    description: Grouping of arr_reporting into a shape friendly for vintage reporting without gaps on months
+
+  - name: arr_ltv
+    description: Grouping of arr_vintages into shape friendly for ltv calculations
+    columns:
+      - name: unique_key
+        tests:
+          - not_null
+  - name: arr_ltv_amer
+    description: For Americas grouping of arr_vintages into shape friendly for ltv calculations
+    columns:
+      - name: unique_key
+        tests:
+          - not_null
+  - name: arr_ltv_emea
+    description: For EMEA grouping of arr_vintages into shape friendly for ltv calculations
+    columns:
+      - name: unique_key
+        tests:
+          - not_null
+  - name: arr_ltv_apac
+    description: For APAC grouping of arr_vintages into shape friendly for ltv calculations
+    columns:
+      - name: unique_key
+        tests:
+          - not_null
+  - name: arr_ltv_row
+    description: For ROW grouping of arr_vintages into shape friendly for ltv calculations
+    columns:
+      - name: unique_key
+        tests:
+          - not_null
+      
+
+

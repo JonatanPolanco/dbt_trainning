@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: diagnostics
+    database: 'RAW'
+    schema: diagnostics
+    loader: Snowflake Stage
+    tags:
+      - stage
+
+    tables:
+      - name: log_entries
+        description: 'Diagnostics log entries'

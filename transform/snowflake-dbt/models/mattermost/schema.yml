@@ -1,0 +1,71 @@
+version: 2
+
+models:
+  - name: server_daily_details
+    description: Production server daily details table. Derived from events.security. Only includes production servers defined by TEDAS logic.
+    columns:
+      - name: server_id
+        tests:
+          - not_null
+
+  - name: downloads
+    description: Mattermost downloads
+  
+  - name: contributor_employee_map_data
+    description: Location data on contributors and employees
+
+  - name: github_community_contributions
+
+  - name: github_community_contributors
+
+  - name: github_all_contributions
+
+  - name: github_all_contributors
+  
+  - name: nps_data
+    description: NPS scores and feedback
+
+  - name: server_fact
+    description: Production server attributes including the server's first active date (telemetry-enabled), last active date (telemetry-enabled), the all-time max active users logged on the server, and the last date the server logged active users.
+
+  - name: orgm_delete_audit
+    description: Audit log of records we've deleted from the OrgM schema based on the OrgM Delete_History__c object.
+  
+  - name: server_daily_details_ext
+    description: Contains daily snapshot of all server-related fields and dimensions from staging server details tables per server.
+  
+  - name: user_fact
+    description: Contains the latest User data pertaining to user activity, events performed, nps submissions, server id, account sfid, license id, etc.
+
+  - name: user_daily_details
+    description: Contains a daily snapshot of a users state and all time usage/activity up to that date including activity, events, nps, server/account/license details.
+
+  - name: server_upgrades
+    description: Contains each instance a server upgraded from one version to a different, greater version.
+  
+  - name: nps_server_daily_score
+    description: Contains the daily server NPS score for each server with 1 or more user NPS submission.
+  
+  - name: nps_user_daily_score
+    description: User NPS score snapshot at a daily level. Retrieves the User's latest NPS score submission on or before the record date.
+
+  - name: nps_server_version_daily_score
+    description: Contains a daily snapshot of each User's lastest NPS score for each server version. Needed to trend cumulative scores by server version (per request of Eric Sethna).
+
+  - name: excludable_servers
+    description: List of all identifiable excludable servers (mattermost-owned and/or test/development servers)
+  
+  - name: marketo_forms
+    description: Raw Marketo data for visualization in Looker.
+
+  - name: server_feature_flag_details
+    description: Split.io feature flag data for A/B testing features at the daily server level.
+
+  - name: user_28day_retention
+    description: Contains all users from 2020-02-01 onward with a first active timestamp, server id, and boolean indicating whether they were active on the 28th day from initial first activity.
+
+  - name: user_retention
+    description: Contains all users from 2020-02-01 onward with a first active timestamp, server id, and boolean indicating whether they were active from initial first activity.
+
+  - name: focalboard_user_retention
+    description: Contains all Focalboard users from 2021-10-11 onward with a first active timestamp, server id, and boolean indicating whether they were active from initial first activity.

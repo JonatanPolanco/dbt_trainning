@@ -1,0 +1,14 @@
+version: 2
+models:
+  - name: account_update_arr_seats_type
+  - name: account_update_health_score
+  - name: account_update_telemetry
+  - name: campaignmember_insert
+  - name: campaignmember_update
+  - name: contact_in_product_trial_request
+  - name: customer_onboarding_update_telemetry
+  - name: lead_in_product_trial_request
+  - name: lead_update_account_link
+  - name: lead_update_status
+  - name: opportunity_update_available_renewals
+  - name: opportunitylineitem_update_amounts

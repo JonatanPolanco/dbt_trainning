@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: information_schema_load
+    database: 'RAW'
+    schema: information_schema
+
+    tables: 
+      - name: tables
+        description: 'Contains list of all tables and accompanying details in the RAW Database.'
+
+  - name: information_schema_transform
+    database: ANALYTICS
+    schema: information_schema
+
+    tables: 
+      - name: tables
+        description: 'Contains list of all tables and accompanying details in the Analytics Database.'

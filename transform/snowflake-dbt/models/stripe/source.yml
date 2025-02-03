@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: stripe_raw
+    database: RAW
+    schema: stripe_prod_2024_06
+    loader: Stitch
+    description: Stripe raw data to warehouse, loaded using stitch.
+    tags:
+      - stitch
+
+    tables:
+      - name: subscriptions
+      - name: customers
+      - name: balance_transactions
+      - name: subscription_items
+      - name: products
+      - name: payouts
+      - name: invoices
+      - name: invoice_line_items
+      - name: invoice_items
+      - name: charges
+      - name: payout_transactions

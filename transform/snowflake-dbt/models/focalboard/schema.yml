@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: focalboard_activity
+    description: Daily activity telemetry related to each focalboard instance/server.
+
+  - name: focalboard_server
+    description: Daily server telemetry related to each focalboard instance/server.
+
+  - name: focalboard_config
+    description: Daily configuration telemetry related to each focalboard instance/server.
+
+  - name: focalboard_fact
+    description: Tracking topline/all-time metrics for each Instance that's leveraged Mattermost's focalboard product.
+
+  - name: focalboard_blocks
+    description: Daily configuration telemetry related to each focalboard instance/server's blocks.
+
+  - name: focalboard_workspaces
+    description: Daily configuration telemetry related to each focalboard instance/server's workspaces.

@@ -1,0 +1,119 @@
+name: "mm_snowflake"
+version: "1.0"
+
+config-version: 2
+
+
+# This setting configures which "profile" dbt uses for this project. Profiles contain
+# database connection information, and should be configured in the  ~/.dbt/profiles.yml file
+profile: "snowflake"
+
+# These configurations specify where dbt should look for different types of files.
+# The `source-paths` config, for example, states that source models can be found
+# in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+    - "target"
+    - "dbt_modules"
+
+
+# ======
+# Run Hooks
+# ======
+# on-run-start:
+#     - "{{ resume_warehouse(target.warehouse) }}"
+
+# on-run-end:
+#     - "{{ suspend_warehouse(target.warehouse) }}"
+
+
+quoting:
+    database: true
+    identifier: false
+    schema: false
+
+models:
+  mm_snowflake:
+    bizops:
+      nightly:
+        +snowflake_warehouse: "TRANSFORM_L"
+        tags: ["bizops", "nightly"]
+
+    blp:
+      tags: "blp"
+
+    cs:
+      tags: "cs"
+
+    events:
+      nightly:
+        +snowflake_warehouse: "TRANSFORM_L"
+        tags: ["events", "nightly"]
+
+    finance:
+      tags: "finance"
+
+    ga:
+      tags: "ga"
+
+    mattermost:
+      nightly:
+        +snowflake_warehouse: "TRANSFORM_L"
+        tags: "nightly"
+
+    staging:
+      server:
+        +snowflake_warehouse: "TRANSFORM_L"
+        tags: ["server", "nightly"]
+
+    qa:
+      tags: "qa"
+
+seeds:
+  enabled: true
+  schema: staging
+  quote_columns: False
+
+  mm_snowflake:
+    p2p_forum_activity:
+      schema: mattermost
+    community_program_members:
+      schema: mattermost
+    sys_vars:
+      schema: util
+    excludable_servers_seed:
+      schema: staging
+    world_cities:
+      schema: util
+    snowflake_contract_rates:
+      schema: bizops
+    staff_github_usernames:
+      schema: mattermost
+    account_industry_mapping:
+      schema: util
+    auto_reply_ooo_phrases:
+      schema: util
+    version_release_dates:
+      schema: mattermost
+    github_repo_categorization:
+      schema: mattermost
+    use_case_key_words:
+      schema: util
+    holidays:
+      schema: util
+    blog_paths:
+      schema: ga
+    marketo_form_names:
+      schema: staging
+    nps_category_backfill:
+      schema: staging
+
+vars:
+  salesforce_default_ownerid: "'0053p0000064nt8AAA'" #default value for salesforce ownerid
+  unknown_account_name: "Unknown Company from Product"

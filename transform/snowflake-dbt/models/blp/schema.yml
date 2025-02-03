@@ -1,0 +1,36 @@
+version: 2
+
+models:
+  - name: account_mapping
+    description: Account mapping information
+  
+  - name: licensed_servers
+    description: Licensed servers information
+ 
+  - name: nonactivated_licenses
+    description: Non Activated Licenses
+  
+  - name: cloud_subscriptions_blp
+    description: Overview of Cloud Subscriptions
+
+  - name: license_overview
+    description: Overview of license information
+
+  - name: licenses
+    description: Contains the license data with feature configuration as an aggregated table from both raw.mattermost2.license and raw.licenses.licenses.
+  
+  - name: license_daily_details
+    description: Contatins a daily snapshot of licenses to trend licenses and configurations over time.
+
+  - name: enterprise_license_mapping
+
+  - name: enterprise_license_fact
+
+  - name: license_server_fact
+    description: Contains a single row per server per license for every time a license has appeared in the server's telemetry.
+
+  - name: customer_conversion_onprem
+    description: Contains a single row per Mattermost Messaging On-Prem customer that has ever had a closed-won opportunity associated with their customer Salesforce account record.
+
+  - name: customer_conversion_cloud
+    description: Contains a single row per Mattermost Messaging Cloud customer that has ever has a closed-won opportunity associated with their customer Salesforce account record.

@@ -1,0 +1,32 @@
+version: 2
+
+macros:
+  - name: convert_bytes
+    description: A macro to convert bytes with precision
+    arguments:
+      - name: bytes
+        type: integer
+        description: The bytes column you want to convert
+      - name: output
+        type: string
+        description: The unit you want to convert to eg - b,mb,gb
+      - name: precision
+        type: integer
+        description: Number of decimal places. Defaults to 2.
+
+  - name: rudder_tracks_summary
+    description: Summarizes a `tracks` table by calculating daily count of each event.
+    arguments:
+      - name: schema
+        type: string
+        description: The schema containing the `tracks` table.
+
+  - name: get_ownerid_or_default
+    description: A macro to transform ownerid to be used in salesforce.
+    arguments:
+      - name: ownerid
+        type: string
+        description: The ownerid that needs to be transformed.
+      - name: default_ownerid
+        type: string
+        description: default value to use if the ownerid starts with '00G'. Stored in dbt variables.

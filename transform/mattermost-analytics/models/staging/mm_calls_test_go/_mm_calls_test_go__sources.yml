@@ -1,0 +1,52 @@
+version: 2
+
+sources:
+  - name: mm_calls_test_go
+    database: 'RAW'
+    schema: mm_calls_test_go
+    loader: Rudderstack
+    description: |
+      Mattermost Calls telemetry data. Stored using Rudderstack.
+      Consider renaming 'test'. Couldn't rename as we started data ingestion when we launched the Beta release.
+      
+      
+    tags: [ 'rudderstack' ]
+
+    freshness: # Check that telemetry data have been received in the past 24 hours
+      warn_after: { count: 12, period: hour }
+      error_after: { count: 24, period: hour }
+    loaded_at_field: received_at
+
+    # Omitting tables with 20 or less rows.
+    tables:
+      - name: call_notify_admin
+        freshness: null # No new events since 2023-01
+      - name: call_ended
+      - name: call_started
+      - name: call_user_joined
+      - name: call_user_left
+      - name: user_close_expanded_view
+      - name: user_close_participants_list
+      - name: user_lower_hand
+      - name: user_open_channel_link
+      - name: user_open_expanded_view
+      - name: user_open_participants_list
+      - name: user_raise_hand
+      - name: user_share_screen
+      - name: user_start_recording
+        freshness: # Check that telemetry data have been received in the past 7 days
+        warn_after: { count: 4, period: day }
+        error_after: { count: 7, period: day }
+        loaded_at_field: received_at
+      - name: user_stop_recording
+        freshness: # Check that telemetry data have been received in the past 14 days
+        warn_after: { count: 7, period: day }
+        error_after: { count: 14, period: day }
+        loaded_at_field: received_at
+      - name: user_unshare_screen
+
+      - name: tracks
+        description: >
+          Contains raw user-level data from rudderstack track method. Note that for every `track` call, RudderStack
+          creates a record in both the `tracks` and `<event_name>` tables.
+

@@ -1,0 +1,268 @@
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'mattermost_analytics'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'snowflake'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+  - "logs"
+
+quoting:
+    database: true
+    identifier: false
+    schema: false
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+models:
+  mattermost_analytics:
+    # Config indicated by + and applies to all files under models/example/
+    staging:
+      +materialized: view
+      # Ideally this would have been named staging. Unfortunately there's already a schema with that name.
+      schema: dbt_staging
+      # Staging layer contains views. Running on hourly mode should introduce manageable load.
+      tags: ['staging', 'hourly']
+    intermediate:
+      +materialized: ephemeral
+      tags: ['intermediate']
+      data_eng:
+        schema: int_data_eng
+        tags: ['nightly']
+      product:
+        schema: int_product
+        tags: ['nightly']
+      web_app:
+        schema: int_web_app
+        tags: ['nightly']
+    marts:
+      +materialized: table
+      tags: ['marts']
+      common:
+        schema: mart_common
+        tags: ['nightly', 'common']
+      data_eng:
+        schema: mart_data_eng
+        tags: ['nightly', 'data-eng']
+      mlt:
+        schema: mart_mlt
+        tags: [ 'nightly', 'mlt' ]
+      product:
+        schema: mart_product
+        tags: ['nightly', 'product']
+      web_app:
+        schema: mart_web_app
+        tags: ['nightly', 'webapp']
+      release:
+        schema: mart_release
+        tags: ['nightly', 'release']
+      sales:
+        schema: mart_sales
+        tags: ['nightly', 'sales']
+        hightouch:
+          # Hightouch syncs should be as close to real time as possible.
+          tags: ['hourly', 'hightouch']
+      marketing:
+        schema: mart_marketing
+        tags: ['nightly', 'marketing']
+    reports:
+      +materialized: table
+      tags: ['reports']
+      mattermost-docs:
+        schema: reports_docs
+        tags: [ 'nightly', 'product' ]
+      product:
+        schema: reports_product
+        tags: [ 'nightly', 'product' ]
+
+    utilities:
+      +materialized: table
+      schema: utilities
+      tags: ['utilities', 'hourly']
+
+  dbt_project_evaluator:
+    schema:
+      mart_dbt_project_evaluator
+
+seeds:
+  dbt_project_evaluator:
+    dbt_project_evaluator_exceptions:
+      +enabled: false
+
+  mattermost_analytics:
+    +enabled: true
+    salesforce:
+      +schema: seed_salesforce
+      country_codes:
+        # Override column types
+        +column_types:
+          code: varchar(2)
+          name: varchar(50)
+      email_domain_blacklist:
+        +column_types:
+          email_domain: varchar(50)
+    features:
+      +schema: seed_product_features
+      tracking_plan:
+        # Override column types
+        +column_types:
+          event_name: varchar(100)
+          category: varchar(100)
+          event_type: varchar(200)
+          property_name: varchar(100)
+          property_value: varchar(200)
+          feature_name: varchar(50)
+      playbooks_tracking_plan:
+        # Override column types
+        +column_types:
+          event_name: varchar(100)
+          event_action: varchar(100)
+          deprecated: boolean
+          deprecation_reason: varchar(200)
+          feature_name: varchar(50)
+    servers:
+      server_blacklist:
+        +column_types:
+          installation_id: varchar(100)
+          server_id: varchar(100)
+          reason: varchar(200)
+
+tests:
+  dbt_project_evaluator:
+    # Set DBT project
+    +severity: "{{ env_var('DBT_PROJECT_EVALUATOR_SEVERITY', 'warn') }}"
+  mattermost_analytics:
+    staging:
+      salesforce:
+        tags: ['nightly']
+
+# Configuration variables
+vars:
+  dbt_project_evaluator:
+    # Set test and doc coverage to 75% (default is 100%)
+    documentation_coverage_target: 75
+    test_coverage_target: 75
+    model_types: [ 'staging', 'intermediate', 'marts', 'other', 'reports' ]
+    staging_prefixes: ['stg_', 'base_']
+    marts_prefixes: ['fct_', 'dim_', 'grp_', 'bdg_', 'sync_']
+    reports_folder_name: reports
+    reports_prefixes: [ 'rpt_' ]
+
+  env_vars_to_query_tag_list: ['DBT_CLOUD_PR_ID', 'DBT_CLOUD_PROJECT_ID']
+
+
+  # Community Server ID
+  community_server_id : 93mykbogbjfrbbdqphx3zhze5c
+
+  # Salesforce variables
+  in_product_trial_campaign_id: 7013p000001NkNoAAK
+  salesforce_default_ownerid: 0053p0000064nt8AAA #default value for salesforce ownerid
+  cloud_enterprise_trial_campaign_id: 701Dm000000gpPZIAY
+  telemetry_start_date: "2018-01-01"
+  nps_start_date: "2019-03-27"
+  notification_start_date: "2021-01-01"
+  calls_telemetry_start_date: "2022-03-11"
+  marketing_newsletter_campaign_id: 701Dm000000gnMlIAI
+
+  # Variables to enforce common practices
+  # Number of days prior to current to consider when calculating rolling monthly. I.e. 29 means 29 prior plus today
+  # equals to a total of 30 days.
+  monthly_days: 29
+
+  # List of Known SKUs
+  known_skus: ["professional", "enterprise"]
+
+  # List of excludable countries
+  excluded_countries: ["Russia", "Iran", "North Korea"]
+
+  # List of country top-level domains blacklisted in SF
+  blacklisted_country_tlds:
+    - ".by"
+    - ".cu"
+    - ".ir"
+    - ".kp"
+    - ".mm"
+    - ".ru"
+    - ".sy"
+    - ".ve"
+
+
+  # List of properties for performance metrics
+  performance_metrics_properties:
+    # Event and user properties
+    - "category"
+    - "user_id"
+    - "type"
+    - "user_actual_id"
+    # Context properties
+    - "context_app_namespace"
+    - "context_library_name"
+    - "context_app_version"
+    - "context_app_build"
+    - "context_library_version"
+    - "context_app_name"
+    - "context_locale"
+    - "context_screen_density"
+    # Properties
+    - "after"
+    - "channel"
+    - "count"
+    - "duration"
+    - "first"
+    - "first_effectiveness"
+    - "first_recomputations"
+    - "fresh"
+    - "is_first_preload"
+    - "longest_api_resource"
+    - "longest_api_resource_duration"
+    - "max_api_resource_size"
+    - "num_high"
+    - "num_low"
+    - "num_medium"
+    - "num_of_request"
+    - "num_total"
+    - "request_count"
+    - "second"
+    - "second_effectiveness"
+    - "second_recomputations"
+    - "third"
+    - "third_effectiveness"
+    - "third_recomputations"
+    - "total_duration"
+    - "total_size"
+    - "user_actual_role"
+
+  # Reusable constants
+  const_unknown_features: 'unknown_features'
+
+on-run-start:
+  -  '{{ create_parse_qs_udf()}}'
+  -  '{{ create_extract_license_data_udf()}}'
+  -  '{{ create_parse_user_agent_udf()}}'
+
+dispatch:
+  - macro_namespace: dbt
+    search_order:
+      - mattermost_analytics
+      - dbt_snowflake_query_tags
+      - dbt
+
+query-comment:
+  comment: '{{ dbt_snowflake_query_tags.get_query_comment(node) }}'
+  append: true # Snowflake removes prefixed comments.

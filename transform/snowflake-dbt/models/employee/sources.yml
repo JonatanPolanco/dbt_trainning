@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: employee
+    database: ANALYTICS
+    schema: employee
+
+    tables: 
+      - name: staff_list
+      - name: staff_github_usernames

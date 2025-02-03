@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+  - name: mm_mobile_prod
+    database: 'RAW'
+    schema: mm_mobile_prod
+    loader: Rudderstack
+    description: |
+      Mobile app telemetry pushed using Rudderstack. This schema is for production releases. 
+      
+      [Source code](https://github.com/mattermost/mattermost-mobile/blob/main/app/managers/analytics.ts)
+    tags: ['rudderstack']
+
+    tables:
+      - name: identifies
+        description: User identifying information from users using the mobile app.
+      - name: users
+        description: User information from users using the mobile app.
+      - name: tracks
+        description: Telemetry data for user actions.
+      - name: screens
+        description: Telemetry data whenever user views their mobile screen with any additional relevant information about the screen.
+

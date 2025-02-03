@@ -1,0 +1,6 @@
+.github
+.venv
+build
+airflow/dags
+k8s
+airflow/plugins

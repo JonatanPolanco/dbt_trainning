@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: releases
+    database: 'RAW'
+    schema: releases
+    loader: Snowflake Stage
+    tags:
+      - stage
+
+    tables:
+      - name: log_entries
+        description: 'Releases log entries'
